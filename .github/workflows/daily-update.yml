@@ -1,0 +1,37 @@
+name: Daily Development Log
+
+on:
+  schedule:
+    - cron: "30 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  daily-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update daily log
+        run: |
+          DATE=$(date '+%d %B %Y')
+
+          echo "" >> coding-log.md
+          echo "## $DATE" >> coding-log.md
+          echo "" >> coding-log.md
+          echo "- Daily development practice" >> coding-log.md
+          echo "- Reviewed software engineering concepts" >> coding-log.md
+          echo "" >> coding-log.md
+          echo "---" >> coding-log.md
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add coding-log.md
+          git commit -m "docs: update daily development log" || exit 0
+          git push
